@@ -33,10 +33,7 @@ userAccount::accountError_t userAccount::createAccount(std::function<std::string
 
 	std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
 
-	file << "";
-
 	if (!file.is_open()) {
-		std::cout << "error" << std::endl;
 		accountError_t::CouldNotOpenFile;
 	}
 	
