@@ -13,5 +13,7 @@ int main()
     	return password;
         });
 
+    acc.parseUserAccountInfo("Bane", "SAM");
+
     return 0;
 }

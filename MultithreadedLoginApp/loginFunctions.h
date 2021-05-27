@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <thread>
 #include <map>
 #include <any>
 
@@ -19,6 +20,7 @@ class userAccount
 public:
     enum class accountError_t {
         AccountCreationSuccessful [[maybe_unused]] = 0xFF0,
+        AccountCredentialsFound [[maybe_unused]] = 0xFFF,
         CouldNotCreateAccount [[maybe_unused]] = 0xFF1,
         ThreadReturnedUnknownValue [[maybe_unused]] = 0xFB1,
         CouldNotOpenFile [[maybe_unused]] = 0xF1,
@@ -29,7 +31,7 @@ public:
     typedef int (accountError)(accountError_t);
     accountError_t createAccount(std::string username, std::string password);
     accountError_t createAccount(std::function<std::string()> username, std::function<std::string()> password);
-    accountError_t parseUserAccountInfo(std::fstream file);
+    accountError_t parseUserAccountInfo(std::string username, std::string password);
 	
     std::filesystem::path path{ std::filesystem::current_path() };
 
