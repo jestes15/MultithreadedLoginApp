@@ -142,11 +142,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="loginFunctions.cpp" />
+    <ClCompile Include="mainMenu.cpp" />
     <ClCompile Include="MultithreadedLoginApp.cpp" />
     <ClCompile Include="sha256.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="loginFunctions.h" />
+    <ClInclude Include="mainMenu.h" />
     <ClInclude Include="sha256.h" />
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,8 @@ public:
     accountError_t createAccount(std::string username, std::string password);
     accountError_t createAccount(std::function<std::string()> username, std::function<std::string()> password);
     accountError_t parseUserAccountInfo(std::string username, std::string password);
+
+    std::vector<std::pair<std::string, std::string>> getVector();
 	
     std::filesystem::path path{ std::filesystem::current_path() };
 
@@ -43,5 +45,6 @@ private:
     };
     std::string usernameHeader = ":0x8326:";
     std::string passwordHeader = ":0x8327:";
+    std::vector<std::pair<std::string, std::string>> userData = {};
 };
 #endif //MULTITHREADEDLOGINSYS_LOGINFUNCTIONS_H
