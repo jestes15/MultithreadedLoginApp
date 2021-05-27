@@ -38,7 +38,7 @@ public:
     std::filesystem::path path{ std::filesystem::current_path() };
 
 private:
-    struct userData {
+	struct userData {
         std::string password;
         std::string username;
         accountError_t error;
@@ -47,4 +47,4 @@ private:
     std::string passwordHeader = ":0x8327:";
     std::vector<std::pair<std::string, std::string>> userData = {};
 };
-#endif //MULTITHREADEDLOGINSYS_LOGINFUNCTIONS_H
+#endif

@@ -1,8 +1,8 @@
-#include "loginFunctions.h"
+#include "mainMenu.h"
 
 int main()
 {
-    userAccount acc;
-
+    mainMenu menu;
+	menu.showMainMenu();
     return 0;
 }

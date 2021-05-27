@@ -1,17 +1,17 @@
 #pragma once
 
-#ifdef MULTITHREADEDLOGINSYS_MAINMENU_H
+#ifndef MULTITHREADEDLOGINSYS_MAINMENU_H
 #define MULTITHREADEDLOGINSYS_MAINMENU_H
 #include "loginFunctions.h"
-class mainMenu
+class mainMenu : userAccount
 {
 public:
-	void showMainMenu(userAccount acc);
+	void showMainMenu();
 	void executeCreateAccount();
 	void executeLogin();
 private:
 	bool loggedIn = false;
-
+	std::string menu = "Welcome user, would you like to create an account or log into an existing account?\n1) Create an account\n2) Login in\n";
 };
 
 #endif
