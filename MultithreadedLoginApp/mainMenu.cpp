@@ -45,6 +45,8 @@ void mainMenu::executeUserInput(std::function<int()> function)
 			return input;
 		});
 		break;
+	default:
+		std::cout << "Option not valid" << std::endl;
 	}
 }
 
@@ -62,7 +64,7 @@ void mainMenu::executeCreateAccount(std::function<std::string()> username, std::
 	
 }
 
-void mainMenu::executeLogin(std::function<std::string()> username, std::function<std::string()> password)
+void mainMenu::executeLogin(const std::function<std::string()>& username, const std::function<std::string()>& password)
 {
 	if (loggedIn)
 		return;

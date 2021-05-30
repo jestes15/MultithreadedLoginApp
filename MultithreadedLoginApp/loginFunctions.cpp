@@ -4,15 +4,15 @@ userAccount::accountError_t userAccount::createAccount(std::string username, std
 {
 	std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
 	std::vector<std::pair<std::any, std::any>> accountData;
-	accountData.push_back(std::pair<std::string, int>(username, username.length()));
-	accountData.push_back(std::pair<std::string, int>(password, password.length()));
-	accountData.push_back(std::pair<std::string, std::string>(sha256(username), sha256(password)));
+	accountData.emplace_back(std::pair<std::string, int>(username, username.length()));
+	accountData.emplace_back(std::pair<std::string, int>(password, password.length()));
+	accountData.emplace_back(std::pair<std::string, std::string>(sha256(username), sha256(password)));
 
 	file << usernameHeader << std::any_cast<std::string>(accountData[2].first) << std::endl << passwordHeader << std::any_cast<std::string>(accountData[2].second) << std::endl;
 	return accountError_t::AccountCreationSuccessful;
 }
 
-userAccount::accountError_t userAccount::createAccount(const std::function<std::string()> username, const std::function<std::string()> password)
+constexpr userAccount::accountError_t userAccount::createAccount(const std::function<std::string()>& username, const std::function<std::string()>& password)
 {
 	std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
 

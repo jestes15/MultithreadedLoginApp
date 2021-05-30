@@ -30,7 +30,7 @@ public:
 	
     typedef int (accountError)(accountError_t);
     accountError_t createAccount(std::string username, std::string password);
-    accountError_t createAccount(std::function<std::string()> username, std::function<std::string()> password);
+    constexpr accountError_t createAccount(const std::function<std::string()>& username, const std::function<std::string()>& password);
     accountError_t parseUserAccountInfo(std::string username, std::string password);
 
     std::vector<std::pair<std::string, std::string>> getVector();
