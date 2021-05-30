@@ -1,6 +1,6 @@
 #include "loginFunctions.h"
 
-userAccount::accountError_t userAccount::createAccount(std::string username, std::string password)
+userAccount::accountError_t userAccount::createAccount(std::string const& username, std::string const& password)
 {
 	std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
 	std::vector<std::pair<std::any, std::any>> accountData;
@@ -12,28 +12,25 @@ userAccount::accountError_t userAccount::createAccount(std::string username, std
 	return accountError_t::AccountCreationSuccessful;
 }
 
-constexpr userAccount::accountError_t userAccount::createAccount(const std::function<std::string()>& username, const std::function<std::string()>& password)
+auto userAccount::createAccount(std::function<std::string()> const& username, std::function<std::string()> const& password) -> accountError_t
 {
 	std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
 
 	if (!file.is_open())
-	{
 		return accountError_t::CouldNotCreateAccount;
-	}
-	
-	std::vector<std::pair<std::any, std::any>> accountData;
+
 	auto username_data = username();
 	auto password_data = password();
-	accountData.emplace_back(std::pair<std::string, int>(username_data, username_data.length()));
-	accountData.emplace_back(std::pair<std::string, int>(password_data, password_data.length()));
-	accountData.emplace_back(std::pair(sha256(username_data), sha256(password_data)));
-	file << usernameHeader << std::any_cast<std::string>(accountData[2].first) << std::endl << passwordHeader << std::any_cast<std::string>(accountData[2].second) << std::endl;
+	userData.emplace_back(std::pair<std::string, int>(username_data, username_data.length()));
+	userData.emplace_back(std::pair<std::string, int>(password_data, password_data.length()));
+	userData.emplace_back(std::pair(sha256(username_data), sha256(password_data)));
+	file << usernameHeader << std::any_cast<std::string>(userData[2].first) << std::endl << passwordHeader << std::any_cast<std::string>(userData[2].second) << std::endl;
 
 	return accountError_t::AccountCreationSuccessful;
 }
 
 // TODO Finish this
-userAccount::accountError_t userAccount::parseUserAccountInfo(std::string username, std::string password)
+auto userAccount::parseUserAccountInfo(const std::string& username, const std::string& password) -> accountError_t
 {
 	std::thread grepPasswordsAndUsernames(
 		[](std::vector<std::pair<std::string, std::string>>& userData, std::string& usernameHeader, std::string& passwordHeader)
@@ -66,6 +63,6 @@ userAccount::accountError_t userAccount::parseUserAccountInfo(std::string userna
 	return accountError_t::AccountCredentialsFound;
 }
 
-std::vector<std::pair<std::string, std::string>> userAccount::getVector() {
+auto userAccount::getVector() -> std::vector<std::pair<std::any, std::any>> {
 	return userData;
 }

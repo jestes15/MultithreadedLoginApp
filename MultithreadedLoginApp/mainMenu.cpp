@@ -1,6 +1,6 @@
 #include "mainMenu.h"
 
-void mainMenu::showMainMenu()
+auto mainMenu::showMainMenu() -> void
 {
 	std::cout << menu;
 	executeUserInput([]()
@@ -11,18 +11,18 @@ void mainMenu::showMainMenu()
 	});
 }
 
-void mainMenu::executeUserInput(std::function<int()> function)
+auto mainMenu::executeUserInput(std::function<int()> const& function) -> void
 {
 	switch (function())
 	{
 	case 1:
-		executeCreateAccount([]()
+		executeCreateAccount([]() -> std::string
 		{
 			std::string input;
 			std::cout << "What would you like your username to be?" << std::endl;
 			std::cin >> input;
 			return input;
-		}, []()
+		}, []() -> std::string
 		{
 			std::string input;
 			std::cout << "What would you like your password to be?" << std::endl;
@@ -31,13 +31,13 @@ void mainMenu::executeUserInput(std::function<int()> function)
 		});
 		break;
 	case 2:
-		executeLogin([]()
+		executeLogin([]() -> std::string
 		{
 			std::string input;
 			std::cout << "What is your username?" << std::endl;
 			std::cin >> input;
 			return input;
-		}, []()
+		}, []() -> std::string
 		{
 			std::string input;
 			std::cout << "what is your password?" << std::endl;
@@ -50,7 +50,7 @@ void mainMenu::executeUserInput(std::function<int()> function)
 	}
 }
 
-void mainMenu::executeCreateAccount(std::function<std::string()> username, std::function<std::string()> password)
+auto mainMenu::executeCreateAccount(std::function<std::string()> username, std::function<std::string()> password) -> void
 {
 	if (createAccount(username, password) == accountError_t::AccountCreationSuccessful)
 	{
@@ -64,7 +64,7 @@ void mainMenu::executeCreateAccount(std::function<std::string()> username, std::
 	
 }
 
-void mainMenu::executeLogin(const std::function<std::string()>& username, const std::function<std::string()>& password)
+auto mainMenu::executeLogin(std::function<std::string()> const& username, std::function<std::string()> const& password) -> void
 {
 	if (loggedIn)
 		return;

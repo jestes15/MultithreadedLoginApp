@@ -28,14 +28,13 @@ public:
         CouldNotFindPassword [[maybe_unused]] = 0xFF3
     };
 	
-    typedef int (accountError)(accountError_t);
-    accountError_t createAccount(std::string username, std::string password);
-    constexpr accountError_t createAccount(const std::function<std::string()>& username, const std::function<std::string()>& password);
-    accountError_t parseUserAccountInfo(std::string username, std::string password);
+    auto createAccount(std::string const& username, std::string const& password) -> accountError_t; 
+    auto createAccount(std::function<std::string()> const& username, std::function<std::string()> const& password) -> accountError_t;
+    auto parseUserAccountInfo(std::string const& username, std::string const& password) -> accountError_t;
 
-    std::vector<std::pair<std::string, std::string>> getVector();
+    auto getVector() -> std::vector<std::pair<std::any, std::any>>;
 	
-    std::filesystem::path path{ std::filesystem::current_path() };
+    std::filesystem::path const path{ std::filesystem::current_path() };
 
 private:
 	struct userData {
@@ -43,8 +42,8 @@ private:
         std::string username;
         accountError_t error;
     };
-    std::string usernameHeader = ":0x8326:";
-    std::string passwordHeader = ":0x8327:";
-    std::vector<std::pair<std::string, std::string>> userData = {};
+    std::string const usernameHeader = ":0x8326:";
+    std::string const passwordHeader = ":0x8327:";
+    std::vector<std::pair<std::any, std::any>> userData = {};
 };
 #endif
