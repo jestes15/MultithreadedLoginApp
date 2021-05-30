@@ -50,7 +50,7 @@ auto mainMenu::executeUserInput(std::function<int()> const& function) -> void
 	}
 }
 
-auto mainMenu::executeCreateAccount(std::function<std::string()> username, std::function<std::string()> password) -> void
+auto mainMenu::executeCreateAccount(std::function<std::string()> const& username, std::function<std::string()> const& password) -> void
 {
 	if (createAccount(username, password) == accountError_t::AccountCreationSuccessful)
 	{
@@ -58,15 +58,13 @@ auto mainMenu::executeCreateAccount(std::function<std::string()> username, std::
 		loggedIn = true;
 	}
 	else
-	{
 		std::cout << "Could not create account" << std::endl;
-	}
-	
 }
 
 auto mainMenu::executeLogin(std::function<std::string()> const& username, std::function<std::string()> const& password) -> void
 {
 	if (loggedIn)
 		return;
-	parseUserAccountInfo(username(), password());
+	if (parseUserAccountInfo(username, password) == accountError_t::AccountCredentialsNotFound)
+		std::cout << "Could not login" << std::endl;
 }

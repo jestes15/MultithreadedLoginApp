@@ -5,6 +5,7 @@
 
 #ifndef MULTITHREADEDLOGINSYS_LOGINFUNCTIONS_H
 #define MULTITHREADEDLOGINSYS_LOGINFUNCTIONS_H
+
 #include <iostream>
 #include <filesystem>
 #include <fstream>
@@ -21,6 +22,7 @@ public:
     enum class accountError_t {
         AccountCreationSuccessful [[maybe_unused]] = 0xFF0,
         AccountCredentialsFound [[maybe_unused]] = 0xFFF,
+    	AccountCredentialsNotFound [[maybe_unused]] = 0xFFE,
         CouldNotCreateAccount [[maybe_unused]] = 0xFF1,
         ThreadReturnedUnknownValue [[maybe_unused]] = 0xFB1,
         CouldNotOpenFile [[maybe_unused]] = 0xF1,
@@ -30,7 +32,7 @@ public:
 	
     auto createAccount(std::string const& username, std::string const& password) -> accountError_t; 
     auto createAccount(std::function<std::string()> const& username, std::function<std::string()> const& password) -> accountError_t;
-    auto parseUserAccountInfo(std::string const& username, std::string const& password) -> accountError_t;
+    auto parseUserAccountInfo(std::function<std::any()> const& username, std::function<std::any()> const& password) -> accountError_t;
 
     auto getVector() -> std::vector<std::pair<std::any, std::any>>;
 	

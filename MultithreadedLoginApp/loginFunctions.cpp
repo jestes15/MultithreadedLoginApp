@@ -6,7 +6,7 @@ userAccount::accountError_t userAccount::createAccount(std::string const& userna
 	std::vector<std::pair<std::any, std::any>> accountData;
 	accountData.emplace_back(std::pair<std::string, int>(username, username.length()));
 	accountData.emplace_back(std::pair<std::string, int>(password, password.length()));
-	accountData.emplace_back(std::pair<std::string, std::string>(sha256(username), sha256(password)));
+	accountData.emplace_back(std::pair(sha256(username), sha256(password)));
 
 	file << usernameHeader << std::any_cast<std::string>(accountData[2].first) << std::endl << passwordHeader << std::any_cast<std::string>(accountData[2].second) << std::endl;
 	return accountError_t::AccountCreationSuccessful;
@@ -30,10 +30,12 @@ auto userAccount::createAccount(std::function<std::string()> const& username, st
 }
 
 // TODO Finish this
-auto userAccount::parseUserAccountInfo(const std::string& username, const std::string& password) -> accountError_t
+auto userAccount::parseUserAccountInfo(std::function<std::any()> const& username, std::function<std::any()> const& password) -> accountError_t
 {
+	userData.erase(userData.begin(), userData.end());
+	
 	std::thread grepPasswordsAndUsernames(
-		[](std::vector<std::pair<std::string, std::string>>& userData, std::string& usernameHeader, std::string& passwordHeader)
+		[&]() -> void
 		{
 			auto* data = new std::string[2];
 			std::string fileData;
@@ -57,10 +59,17 @@ auto userAccount::parseUserAccountInfo(const std::string& username, const std::s
 					userData.emplace_back(std::pair(data[0], data[1]));
 				}
 			}
-		}, std::ref(userData), std::ref(usernameHeader), std::ref(passwordHeader));
+		});
 
 	grepPasswordsAndUsernames.join();
-	return accountError_t::AccountCredentialsFound;
+	
+	for (auto&& [i, d] : userData)
+	{
+		if (std::any_cast<std::string>(i) == std::any_cast<std::string>(username()) && std::any_cast<std::string>(d) == std::any_cast<std::string>(password()))
+			return accountError_t::AccountCredentialsFound;
+	}
+	
+	return accountError_t::AccountCredentialsNotFound;
 }
 
 auto userAccount::getVector() -> std::vector<std::pair<std::any, std::any>> {
