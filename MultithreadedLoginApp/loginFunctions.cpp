@@ -12,20 +12,27 @@ userAccount::accountError_t userAccount::createAccount(std::string username, std
 	return accountError_t::AccountCreationSuccessful;
 }
 
-userAccount::accountError_t userAccount::createAccount( std::function<std::string()> username, std::function<std::string()> password)
+userAccount::accountError_t userAccount::createAccount(const std::function<std::string()> username, const std::function<std::string()> password)
 {
 	std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
+
+	if (!file.is_open())
+	{
+		return accountError_t::CouldNotCreateAccount;
+	}
+	
 	std::vector<std::pair<std::any, std::any>> accountData;
 	auto username_data = username();
 	auto password_data = password();
 	accountData.emplace_back(std::pair<std::string, int>(username_data, username_data.length()));
 	accountData.emplace_back(std::pair<std::string, int>(password_data, password_data.length()));
-	accountData.emplace_back(std::pair<std::string, std::string>(sha256(username_data), sha256(password_data)));
+	accountData.emplace_back(std::pair(sha256(username_data), sha256(password_data)));
 	file << usernameHeader << std::any_cast<std::string>(accountData[2].first) << std::endl << passwordHeader << std::any_cast<std::string>(accountData[2].second) << std::endl;
 
 	return accountError_t::AccountCreationSuccessful;
 }
 
+// TODO Finish this
 userAccount::accountError_t userAccount::parseUserAccountInfo(std::string username, std::string password)
 {
 	std::thread grepPasswordsAndUsernames(
@@ -50,7 +57,7 @@ userAccount::accountError_t userAccount::parseUserAccountInfo(std::string userna
 				i++;
 
 				if (i % 2 == 0) {
-					userData.emplace_back(std::pair<std::string, std::string>(data[0], data[1]));
+					userData.emplace_back(std::pair(data[0], data[1]));
 				}
 			}
 		}, std::ref(userData), std::ref(usernameHeader), std::ref(passwordHeader));
