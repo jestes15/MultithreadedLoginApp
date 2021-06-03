@@ -64,8 +64,8 @@ auto userAccount::parseUserAccountInfo(std::function<std::any()> const& username
 	grepPasswordsAndUsernames.join();
 	
 	for (auto&& [i, d] : userData)
-	{
-		if (std::any_cast<std::string>(i) == std::any_cast<std::string>(username()) && std::any_cast<std::string>(d) == std::any_cast<std::string>(password()))
+	{	
+		if (std::any_cast<std::string>(i) == sha256(std::any_cast<std::string>(username())) && std::any_cast<std::string>(d) == sha256(std::any_cast<std::string>(password())))
 			return accountError_t::AccountCredentialsFound;
 	}
 	
