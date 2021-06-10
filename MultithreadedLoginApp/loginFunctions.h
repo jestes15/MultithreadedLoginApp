@@ -6,15 +6,9 @@
 #ifndef MULTITHREADEDLOGINSYS_LOGINFUNCTIONS_H
 #define MULTITHREADEDLOGINSYS_LOGINFUNCTIONS_H
 
-#include <iostream>
 #include <filesystem>
-#include <fstream>
 #include <functional>
-#include <thread>
-#include <map>
 #include <any>
-
-#include "sha256.h"
 
 class userAccount
 {
@@ -29,12 +23,16 @@ public:
         CouldNotFindUsername [[maybe_unused]] = 0xFF2,
         CouldNotFindPassword [[maybe_unused]] = 0xFF3
     };
+
+	userAccount();
+
+	auto updateUserData() -> void;
 	
-    auto createAccount(std::string const& username, std::string const& password) -> accountError_t; 
+    [[nodiscard]] auto createAccount(std::string const& username, std::string const& password) const -> accountError_t; 
     auto createAccount(std::function<std::string()> const& username, std::function<std::string()> const& password) -> accountError_t;
     auto parseUserAccountInfo(std::function<std::any()> const& username, std::function<std::any()> const& password) -> accountError_t;
 
-    auto getVector() -> std::vector<std::pair<std::any, std::any>>;
+    [[nodiscard]] auto getVector() const -> std::vector<std::pair<std::any, std::any>>;
 	
     std::filesystem::path const path{ std::filesystem::current_path() };
 
@@ -44,8 +42,8 @@ private:
         std::string username;
         accountError_t error;
     };
-    std::string const usernameHeader = ":0x8326:";
-    std::string const passwordHeader = ":0x8327:";
+    std::string delimiter = ":&&:%%:";
     std::vector<std::pair<std::any, std::any>> userData = {};
+	std::vector<std::pair<std::any, std::any>> accountCreationVector = {};
 };
 #endif

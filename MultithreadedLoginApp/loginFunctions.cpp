@@ -1,6 +1,41 @@
 #include "loginFunctions.h"
 
-userAccount::accountError_t userAccount::createAccount(std::string const& username, std::string const& password)
+#include <iostream>
+#include <fstream>
+#include <thread>
+#include <map>
+
+#include "sha256.h"
+
+auto userAccount::updateUserData() -> void
+{
+	userData.erase(userData.begin(), userData.end());
+
+	std::thread grepPasswordsAndUsernames(
+		[&]() -> void
+		{
+				auto* data = new std::string[2];
+				std::string fileData;
+				std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
+				while (!file.eof())
+				{
+					file >> fileData;
+					std::cout << fileData << std::endl;
+					if (!fileData.empty())
+					{
+						std::string tempData = fileData;
+						data[0] = fileData.erase(fileData.find(delimiter), fileData.length());
+						data[1] = tempData.erase(0, tempData.find(delimiter) + delimiter.length());
+						userData.emplace_back(std::pair(data[0], data[1]));
+					}
+					fileData = "";
+				}
+		});
+	grepPasswordsAndUsernames.join();
+}
+
+
+auto userAccount::createAccount(std::string const& username, std::string const& password) const -> accountError_t
 {
 	std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
 	std::vector<std::pair<std::any, std::any>> accountData;
@@ -8,7 +43,7 @@ userAccount::accountError_t userAccount::createAccount(std::string const& userna
 	accountData.emplace_back(std::pair<std::string, int>(password, password.length()));
 	accountData.emplace_back(std::pair(sha256(username), sha256(password)));
 
-	file << usernameHeader << std::any_cast<std::string>(accountData[2].first) << std::endl << passwordHeader << std::any_cast<std::string>(accountData[2].second) << std::endl;
+	file << std::any_cast<std::string>(accountData[2].first) << delimiter << std::any_cast<std::string>(accountData[2].second) << std::endl;
 	return accountError_t::AccountCreationSuccessful;
 }
 
@@ -21,48 +56,16 @@ auto userAccount::createAccount(std::function<std::string()> const& username, st
 
 	auto username_data = username();
 	auto password_data = password();
-	userData.emplace_back(std::pair<std::string, int>(username_data, username_data.length()));
-	userData.emplace_back(std::pair<std::string, int>(password_data, password_data.length()));
-	userData.emplace_back(std::pair(sha256(username_data), sha256(password_data)));
-	file << usernameHeader << std::any_cast<std::string>(userData[2].first) << std::endl << passwordHeader << std::any_cast<std::string>(userData[2].second) << std::endl;
+	accountCreationVector.emplace_back(std::pair<std::string, int>(username_data, username_data.length()));
+	accountCreationVector.emplace_back(std::pair<std::string, int>(password_data, password_data.length()));
+	accountCreationVector.emplace_back(std::pair(sha256(username_data), sha256(password_data)));
+	file << std::endl << std::any_cast<std::string>(accountCreationVector[2].first) << delimiter << std::any_cast<std::string>(accountCreationVector[2].second);
 
 	return accountError_t::AccountCreationSuccessful;
 }
 
-// TODO Finish this
 auto userAccount::parseUserAccountInfo(std::function<std::any()> const& username, std::function<std::any()> const& password) -> accountError_t
 {
-	userData.erase(userData.begin(), userData.end());
-	
-	std::thread grepPasswordsAndUsernames(
-		[&]() -> void
-		{
-			auto* data = new std::string[2];
-			std::string fileData;
-			std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
-			int i = 0;
-			while (!file.eof())
-			{
-				file >> fileData;
-				std::string tempData = fileData;
-				if (fileData.erase(8, fileData.size()) == usernameHeader)
-				{
-					data[0] = tempData.erase(0, 8);
-				}
-				if (fileData.erase(8, fileData.size()) == passwordHeader)
-				{
-					data[1] = tempData.erase(0, 8);
-				}
-				i++;
-
-				if (i % 2 == 0) {
-					userData.emplace_back(std::pair(data[0], data[1]));
-				}
-			}
-		});
-
-	grepPasswordsAndUsernames.join();
-	
 	for (auto&& [i, d] : userData)
 	{	
 		if (std::any_cast<std::string>(i) == sha256(std::any_cast<std::string>(username())) && std::any_cast<std::string>(d) == sha256(std::any_cast<std::string>(password())))
@@ -72,6 +75,33 @@ auto userAccount::parseUserAccountInfo(std::function<std::any()> const& username
 	return accountError_t::AccountCredentialsNotFound;
 }
 
-auto userAccount::getVector() -> std::vector<std::pair<std::any, std::any>> {
+auto userAccount::getVector() const -> std::vector<std::pair<std::any, std::any>> {
 	return userData;
+}
+
+userAccount::userAccount()
+{
+	userData.erase(userData.begin(), userData.end());
+
+	std::thread grepPasswordsAndUsernames(
+		[&]() -> void
+		{
+				auto* data = new std::string[2];
+				std::string fileData;
+				std::fstream file("shadow", std::ios::in | std::ios::out | std::ios::app);
+				while (!file.eof())
+				{
+					file >> fileData;
+					std::cout << fileData << std::endl;
+					if (!fileData.empty())
+					{
+						std::string tempData = fileData;
+						data[0] = fileData.erase(fileData.find(delimiter), fileData.length());
+						data[1] = tempData.erase(0, tempData.find(delimiter) + delimiter.length());
+						userData.emplace_back(std::pair(data[0], data[1]));
+					}
+					fileData = "";
+				}
+		});
+	grepPasswordsAndUsernames.join();
 }

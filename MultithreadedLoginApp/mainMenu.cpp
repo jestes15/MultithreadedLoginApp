@@ -1,5 +1,18 @@
 #include "mainMenu.h"
 
+#ifdef _WIN32
+#include <Windows.h>
+constexpr auto clear_msg = "cls";
+#else
+#include <unistd.h>
+constexpr auto clear_msg = "clear";
+#endif
+
+#include "sha256.h"
+#include "sha512.h"
+#include <iostream>
+
+
 auto mainMenu::showMainMenu() -> void
 {
 	std::cout << menu;
@@ -130,12 +143,12 @@ auto mainMenu::getSHA512Hash(std::string const& source) -> std::string
 auto mainMenu::getSHA512Hash(std::string const& source, std::string* dest) -> void
 {
 	(*dest) = sha512(source);
-}S
+}
 
 auto mainMenu::showLoginMenu() -> void
 {
 	std::cout << "What would you like to do?" << std::endl;
-	std::cout << "0: Quite\nm1: Create 256 Hash\n2: Create 512 Hash" << std::endl;
+	std::cout << "0: Quit\n1: Create 256 Hash\n2: Create 512 Hash" << std::endl;
 	int val;
 	std::cin >> val;
 
