@@ -1,7 +1,4 @@
 #pragma once
-//
-// Created by bl4z3 on 5/24/2021.
-//
 
 #ifndef MULTITHREADEDLOGINSYS_LOGINFUNCTIONS_H
 #define MULTITHREADEDLOGINSYS_LOGINFUNCTIONS_H
@@ -25,9 +22,8 @@ public:
     };
 
 	userAccount();
-
-	auto updateUserData() -> void;
 	
+	auto updateUserData() -> void;
     [[nodiscard]] auto createAccount(std::string const& username, std::string const& password) const -> accountError_t; 
     auto createAccount(std::function<std::string()> const& username, std::function<std::string()> const& password) -> accountError_t;
     auto parseUserAccountInfo(std::function<std::any()> const& username, std::function<std::any()> const& password) -> accountError_t;

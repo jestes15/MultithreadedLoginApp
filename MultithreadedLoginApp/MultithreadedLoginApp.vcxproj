@@ -141,6 +141,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BuiltIn.cpp" />
+    <ClCompile Include="IntroSort.cpp" />
     <ClCompile Include="loginFunctions.cpp" />
     <ClCompile Include="mainMenu.cpp" />
     <ClCompile Include="MultithreadedLoginApp.cpp" />
@@ -148,6 +150,8 @@
     <ClCompile Include="sha512.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuiltIn.h" />
+    <ClInclude Include="IntroSort.h" />
     <ClInclude Include="loginFunctions.h" />
     <ClInclude Include="mainMenu.h" />
     <ClInclude Include="sha256.h" />
