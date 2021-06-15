@@ -33,9 +33,6 @@
     <ClCompile Include="IntroSort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BuiltIn.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="loginFunctions.h">
@@ -51,9 +48,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IntroSort.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BuiltIn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
